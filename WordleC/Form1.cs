@@ -14,6 +14,13 @@ namespace WordleC
 {
     public partial class Form1 : Form
     {
+
+        String Wbutton = "";
+        string[] keywords = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü" };
+        string[] keywords2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ" };
+        string[] keywords3 = { "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç" };
+        int i;
+        string Bchar;
         public Form1()
         {
             InitializeComponent();
@@ -24,11 +31,11 @@ namespace WordleC
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //_keyWord = "manga";
-            _keyWord = ChooseWord();
+            _keyWord = "manga";
+            //_keyWord = ChooseWord();
             label1.Visible = false;
             CreateTextBoxes();
-            //Buttons();
+            KButtonsBugra();
 
 
         }
@@ -98,6 +105,11 @@ namespace WordleC
             {
                 TextBox t = new TextBox();
                 t.Name= Convert.ToString(i);
+                
+                if (i == 0)
+                {
+                    t.Tag = -1;
+                }
                 t.Enabled = i<5;
                 t.KeyDown += new KeyEventHandler(Form1_KeyDown);
                 t.MaxLength = 1;
@@ -107,6 +119,20 @@ namespace WordleC
                 tableLayoutPanel1.Controls.Add(t);
             }
         }
+        private TextBox getSelectedTextBox()
+        {
+            foreach (TextBox item in tableLayoutPanel1.Controls)
+            {
+                if (!(item.Text== null) && Convert.ToInt32(item.Tag) == -1)
+                {
+                    
+                    return item;
+                }                                            
+            }              
+            return null;
+            
+        }
+
 
         private void OpenCloseTextBoxes()
         {
@@ -177,11 +203,11 @@ namespace WordleC
                 return;
             }
 
-            if (!CheckWordInSozluk(inputWord))
-            {
-                MessageBox.Show("Kelime listesinde bulunamadı.");
-                return;
-            }
+            //if (!CheckWordInSozluk(inputWord))
+            //{
+            //    MessageBox.Show("Kelime listesinde bulunamadı.");
+            //    return;
+            //}
 
             var count = _step*5;
             var trueLetterCount = 0;
@@ -229,31 +255,6 @@ namespace WordleC
                     newKeyWord=newKeyWord.Remove(newKeyWord.IndexOf(letterIndex.Letter), 1);
                 }
             }
-
-            //foreach (var character in keyWord)
-            //{
-            //    var iChar = inputWord[count%5];
-            //    if (iChar == character)
-            //    {
-            //        Console.WriteLine(character);
-            //        FillColorTextbox(count, Color.LightGreen);
-            //        trueLetterCount++;
-            //        if (trueLetterCount == 5)
-            //        {
-            //            GameOver(true);
-            //            return;
-            //        }
-            //    }
-            //    else if (keyWord.Contains(iChar) && keyWord[count%5]!=iChar)
-            //    {
-            //        Console.WriteLine("içinde " + iChar);
-            //        FillColorTextbox(count, Color.LightYellow);
-            //    }
-            //    //inputWord = inputWord.Remove(0, 1);
-            //    count++;
-            //}
-
-
             _step++;
 
             if (_step > 5)
@@ -262,6 +263,7 @@ namespace WordleC
                 return;
             }
 
+            DisableButtons(inputWord);
             OpenCloseTextBoxes();
         }
 
@@ -270,6 +272,7 @@ namespace WordleC
             var name = Convert.ToString(i);
             TextBox tBox = (TextBox)tableLayoutPanel1.Controls.Find(name, false)[0];
             tBox.BackColor = color;
+            Bchar = tBox.Text;
         }
 
         private void GameOver(bool win)
@@ -286,48 +289,122 @@ namespace WordleC
             tableLayoutPanel1.Enabled = false;
         }
 
-        //private void Buttons()
-        //{
-        //    String Wbutton = "";
-        //    string[] keywords = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ", "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç" };
-        //    string[] keywords2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ" };
-        //    string[] keywords3 = { "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç" };
+        private void KButtons()
+        {
+            String Wbutton = "";
+            string[] keywords = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü", };
+            string[] keywords2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ" };
+            string[] keywords3 = { "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç" };
 
-        //    for (int i = 0; i <= 31; i++)
-        //    {
+            for (int i = 0; i <= 31; i++)
+            {
 
-        //        tableLayoutPanel2.ColumnCount = 12;
-        //        Button newButton = new Button();
-        //        newButton.Width = 50;
-        //        newButton.Height = 50;
-        //        newButton.Left = (i % 5) * 50;
-        //        newButton.Top = (i / 5) * 50;
-        //        int sayac = newButton.TabIndex;
-        //        //newButton.Text = keywords[i];
-        //        //tableLayoutPanel1.Controls.Add(newButton);
-        //        if (i <= 11)
-        //        {
-        //            newButton.Text = keywords[i];
-        //            tableLayoutPanel2.Controls.Add(newButton);
-        //        }
-        //        if (i > 11 && i <= 22)
-        //        {
-        //            newButton.Text = keywords2[i - 12];
-        //            tableLayoutPanel2.Controls.Add(newButton);
-        //        }
-        //        if (i > 22)
-        //        {
-        //            newButton.Text = keywords3[i - 23];
-        //            tableLayoutPanel2.Controls.Add(newButton);
-        //        }
+                tableLayoutPanel2.ColumnCount = 12;
+                Button newButton = new Button();
 
+                newButton.Width = 50;
+                newButton.Height = 50;
+                newButton.Left = (i % 5) * 50;
+                newButton.Top = (i / 5) * 50;
+                int sayac = newButton.TabIndex;
+                
+                //newButton.Text = keywords[i];
+                //tableLayoutPanel1.Controls.Add(newButton);
+                if (i <= 11)
+                {
+                    newButton.Text = keywords[i];
+                    tableLayoutPanel2.Controls.Add(newButton);
+                    
+                }
+                if (i > 11 && i <= 22)
+                {
+                    newButton.Text = keywords2[i - 12];
+                    tableLayoutPanel2.Controls.Add(newButton);
+                }
+                if (i > 22)
+                {
+                    newButton.Text = keywords3[i - 23];
+                    tableLayoutPanel2.Controls.Add(newButton);
+                }
 
-        //    }
-        //}
+                newButton.Click += button_Click;
+            }
+        }
+
+        private void KButtonsBugra()
+        {
+            String Wbutton = "";
+            string[] keywords = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ", "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç" };
+
+            for (int i = 0; i <= 31; i++)
+            {
+                tableLayoutPanel2.ColumnCount = 12;
+                Button newButton = new Button();
+
+                newButton.Width = 50;
+                newButton.Height = 50;
+                newButton.Left = (i % 12) * 50;
+                newButton.Top = (i / 12) * 50;
+                newButton.Name = keywords[i];
+                newButton.Text= keywords[i];
+                newButton.KeyDown += new KeyEventHandler(Form1_KeyDown);
+                //int sayac = newButton.TabIndex;
+
+                ////newButton.Text = keywords[i];
+                ////tableLayoutPanel1.Controls.Add(newButton);
+                //if (i <= 11)
+                //{
+                //    newButton.Text = keywords[i];
+                //    tableLayoutPanel2.Controls.Add(newButton);
+
+                //}
+                //if (i > 11 && i <= 22)
+                //{
+                //    newButton.Text = keywords2[i - 12];
+                //    tableLayoutPanel2.Controls.Add(newButton);
+                //}
+                //if (i > 22)
+                //{
+                //    newButton.Text = keywords3[i - 23];
+                //    tableLayoutPanel2.Controls.Add(newButton);
+                //}
+                tableLayoutPanel2.Controls.Add(newButton);
+                newButton.Click += button_Click;
+            }
+        }
+
+        private void button_Click(object sender, EventArgs e) //klavye butonlarına basınca çalıştı
+        {
+            Button btn = (Button)sender;
+            foreach(TextBox tb in tableLayoutPanel1.Controls)
+            {
+                int value = Convert.ToInt32(tb.Name);
+                if(value<(_step+1)*5 && value >= _step * 5)
+                {
+                    if (string.IsNullOrEmpty(tb.Text))
+                    {
+                        tb.Text = btn.Name;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void DisableButtons(string input)
+        {
+            var charList = input.Distinct();
+            foreach(var c in charList)
+            {
+                Button btn = (Button)tableLayoutPanel2.Controls.Find(c.ToString(), false)[0];
+                btn.Enabled = false;
+            }
+        }
 
         private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
+
+        
     }
 }
